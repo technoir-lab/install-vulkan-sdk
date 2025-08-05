@@ -61,7 +61,7 @@ function _install_windows_7z() {
 #   and delegates accordingly
 function install_windows() {
   test -d $VULKAN_SDK && test -f vulkan_sdk.exe
-  if [[ 7z l vulkan_sdk.exe | grep Include/ >/dev/null ]] ; then
+  if 7z l vulkan_sdk.exe | grep Include/ >/dev/null ; then
     _install_windows_7z
   else
     _install_windows_qt
