@@ -100,7 +100,7 @@ function install_mac() {
   fi
   echo "recognized zip layout 'vulkan_sdk.zip' ${InstallVulkan}.app/Contents" >&2
   local sdk_temp=${VULKAN_SDK}.tmp
-  sudo ${InstallVulkan}.app/Contents/MacOS/${InstallVulkan} --root "$sdk_temp" --accept-licenses --default-answer --confirm-command install com.lunarg.vulkan.volk
+  sudo ${InstallVulkan}.app/Contents/MacOS/${InstallVulkan} --root "$sdk_temp" --accept-licenses --default-answer --confirm-command install com.lunarg.vulkan.vma com.lunarg.vulkan.volk com.lunarg.vulkan.ios
   du -hs $sdk_temp
   test -d $sdk_temp/macOS || { echo "unrecognized dmg folder layout: $sdk_temp" ; ls -l $sdk_temp ; exit 10 ; }
   cp -r $sdk_temp/macOS/* $VULKAN_SDK/
