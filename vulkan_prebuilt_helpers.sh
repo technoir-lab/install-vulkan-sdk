@@ -12,7 +12,7 @@ function _os_filename() {
   case $1 in
     mac) echo vulkan_sdk.zip ;;
     linux) echo vulkan_sdk.tar.gz ;;
-    windows) echo vulkan_sdk.exe ;;
+    windows|warm) echo vulkan_sdk.exe ;;
     *) echo "unknown $1" >&2 ; exit 9 ;;
   esac
 }
@@ -73,6 +73,11 @@ function install_windows() {
     ls -l "$VULKAN_SDK" >&2
     exit 1
   fi
+}
+
+function install_warm() {
+  # Windows ARM installs the same way as Windows
+  install_windows
 }
 
 function install_mac() {
