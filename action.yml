@@ -16,10 +16,15 @@ inputs:
     description: 'silence GitHub Annotation notice displayed if resolving `latest` into Vulkan SDK release number'
     default: false
     required: false
+  components:
+    description: 'space separated list of Vulkan SDK component ids to install (default: com.lunarg.vulkan.core); available: com.lunarg.vulkan.core, com.lunarg.vulkan.usr, com.lunarg.vulkan.sdl2, com.lunarg.vulkan.glm, com.lunarg.vulkan.volk, com.lunarg.vulkan.vma, com.lunarg.vulkan.ios, com.lunarg.vulkan.kosmic, com.lunarg.vulkan.debug, com.lunarg.vulkan.x64, com.lunarg.vulkan.arm64'
+    default: 'com.lunarg.vulkan.core'
+    required: false
 runs:
   using: "composite"
   steps:
     - name: Preset environment variables
+      id: preset-env
       shell: bash
       run: |
         # preset env
@@ -47,11 +52,15 @@ runs:
           test -n "$version" || { echo "could not resolve latest version" ; exit 9 ; }
           [[ "${{ inputs.quiet }}" == "true" ]] || echo "::notice title=Using Vulkan SDK $version::resolved via '$url'"
         fi
+        components=$(echo ${VULKAN_SDK_COMPONENTS:-${{ inputs.components }}} | tr ',' ' ' | tr '[:upper:]' '[:lower:]')
+        . $GITHUB_ACTION_PATH/vulkan_prebuilt_helpers.sh
+        components=$(_vulkan_effective_components $os $components) || exit $?
+        echo "sdk_dir=$sdk_dir" >> $GITHUB_OUTPUT
         (
-          echo VULKAN_SDK_DIR=$sdk_dir
           echo VULKAN_SDK_VERSION=$version
           echo VULKAN_SDK_PLATFORM=$os
         ) | tee -a $GITHUB_ENV
+        echo "components=${components// /,}" >> $GITHUB_OUTPUT
 
     - name: Check Vulkan SDK installer cache
       id: vulkan-cached-sdk
@@ -59,7 +68,7 @@ runs:
       uses: actions/cache@v4.3.0
       with:
         path: vulkan_sdk.*
-        key: ${{ runner.os }}-vulkan-prebuilt-sdk-${{ inputs.cache }}-${{ env.VULKAN_SDK_VERSION }}
+        key: ${{ runner.os }}-vulkan-prebuilt-sdk-${{ inputs.cache }}-${{ env.VULKAN_SDK_VERSION }}-${{ steps.preset-env.outputs.components }}
 
     - name: Download Vulkan SDK
       shell: bash
@@ -70,6 +79,9 @@ runs:
 
     - name: Install Vulkan SDK
       shell: bash
+      env:
+        VULKAN_SDK_COMPONENTS: ${{ steps.preset-env.outputs.components }}
+        VULKAN_SDK_DIR: ${{ steps.preset-env.outputs.sdk_dir }}
       run: |
         # install
         . $GITHUB_ACTION_PATH/vulkan_prebuilt_helpers.sh
