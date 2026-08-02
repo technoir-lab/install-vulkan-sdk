@@ -1,4 +1,4 @@
-# install-vulkan-sdk v1.2
+# install-vulkan-sdk
 
 This action automatically downloads and installs the Vulkan SDK development environment.
 
@@ -25,10 +25,10 @@ Know working SDK version for windows/mac/linux:
 - 1.4.357.0
 
 ##### Available SDK versions:
-  - [windows.json](https://vulkan.lunarg.com/sdk/versions/windows.json) / [warm.json](https://vulkan.lunarg.com/sdk/versions/warm.json)
-  - [linux.json](https://vulkan.lunarg.com/sdk/versions/linux.json)
-  - [mac.json](https://vulkan.lunarg.com/sdk/versions/mac.json) (version >= 1.3.296.0)
-  - see also https://vulkan.lunarg.com/sdk/home
+- [windows.json](https://vulkan.lunarg.com/sdk/versions/windows.json) / [warm.json](https://vulkan.lunarg.com/sdk/versions/warm.json)
+- [linux.json](https://vulkan.lunarg.com/sdk/versions/linux.json)
+- [mac.json](https://vulkan.lunarg.com/sdk/versions/mac.json)
+- See also https://vulkan.lunarg.com/sdk/home
 
 ### Environment
 
@@ -41,11 +41,8 @@ Exported variables:
 
 ### Caveats
 
-Please be aware that Vulkan SDKs can use a lot of disk space; windows/linux approximately ~0.75GB; macos approximately ~1.75GB (mostly `lib/libshaderc_combined.a`).
-
-If your project only depends on Vulkan-Headers and Vulkan-Loader to compile and link against then you may want to consider using [humbletim/setup-vulkan-sdk](https://github.com/humbletim/setup-vulkan-sdk) instead, which allows building individual SDK components directly from Khronos source repos (and uses less disk space).
+Please be aware that Vulkan SDKs can use a lot of disk space; windows/linux approximately ~0.75GB; macOS approximately ~1.75GB.
 
 ## References
-- [Vulkan SDK](https://www.lunarg.com/vulkan-sdk/)
+- [Vulkan SDK](https://www.lunarg.com/products/vulkan-sdk/)
 - [Vulkan SDK web services API](https://vulkan.lunarg.com/content/view/latest-sdk-version-api)
-- [humbletim/setup-vulkan-sdk](https://github.com/humbletim/setup-vulkan-sdk)
