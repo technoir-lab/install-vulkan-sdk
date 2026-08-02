@@ -10,7 +10,7 @@ on:
         versions:
           description: 'Vulkan SDK Versions'
           required: true
-          default: '[ "1.4.321.0" ]'
+          default: '[ "1.4.357.0" ]'
         oses:
           description: 'Matrix OSes'
           required: true

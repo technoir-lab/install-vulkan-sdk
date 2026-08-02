@@ -5,7 +5,7 @@
 
 # example of running manually:
 # $ . vulkan_prebuilt_helpers.
-# $ VULKAN_SDK_VERSION=1.3.204.0 download_linux    # fetches vulkan_sdk.tar.gz
+# $ VULKAN_SDK_VERSION=1.4.357.0 download_linux    # fetches vulkan_sdk.tar.gz
 # $ VULKAN_SDK_DIR=$PWD/VULKAN_SDK install_linux   # installs
 
 function _os_filename() {

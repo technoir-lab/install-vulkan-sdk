@@ -5,11 +5,11 @@ This action automatically downloads and installs the Vulkan SDK development envi
 ### Usage
 
 ```yaml
-  -name: Install Vulkan SDK
-   uses: humbletim/install-vulkan-sdk@v1.2
-   with:
-     version: 1.4.309.0
-     cache: true
+  - name: Install Vulkan SDK
+    uses: technoir-lab/install-vulkan-sdk@v1.2.4
+    with:
+      version: 1.4.357.0
+      cache: true
 ```
 
 Parameters:
@@ -20,7 +20,7 @@ Parameters:
 ### SDK Revisions
 
 Know working SDK version for windows/mac/linux:
-- 1.4.309.0
+- 1.4.357.0
 
 ##### Available SDK versions:
   - [windows.json](https://vulkan.lunarg.com/sdk/versions/windows.json) / [warm.json](https://vulkan.lunarg.com/sdk/versions/warm.json)
