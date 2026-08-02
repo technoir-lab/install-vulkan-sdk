@@ -31,7 +31,10 @@ Know working SDK version for windows/mac/linux:
 ### Environment
 
 Exported variables:
-- `VULKAN_SDK` (standard variable used by cmake and other build tools)
+- `VULKAN_SDK` (standard variable used by cmake and other build tools; on macOS
+  this points at the installed `macOS` subdirectory)
+- `VULKAN_SDK_DIR` (base directory the SDK is installed into; on macOS this
+  contains the `macOS` and `iOS` subdirectories)
 - `VULKAN_SDK_VERSION`
 - `VULKAN_SDK_PLATFORM`
 - `PATH` is extended to include `VULKAN_SDK/bin` (so SDK tools like `glslangValidator` can be used directly)

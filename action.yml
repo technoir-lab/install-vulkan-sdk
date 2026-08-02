@@ -38,7 +38,7 @@ runs:
           *) echo "unknown runner_os: $runner_os" ; exit 7 ; ;;
         esac
         version=${VULKAN_SDK_VERSION:-${{ inputs.version }}}
-        sdk_dir=${VULKAN_SDK:-$basedir/VULKAN_SDK}
+        sdk_dir=${VULKAN_SDK_DIR:-$basedir/VULKAN_SDK}
         test -d $sdk_dir || mkdir -pv $sdk_dir
         if [[ $version == 'latest' ]] ; then
           url=https://vulkan.lunarg.com/sdk/latest/$os.txt
@@ -48,7 +48,7 @@ runs:
           [[ "${{ inputs.quiet }}" == "true" ]] || echo "::notice title=Using Vulkan SDK $version::resolved via '$url'"
         fi
         (
-          echo VULKAN_SDK=$sdk_dir
+          echo VULKAN_SDK_DIR=$sdk_dir
           echo VULKAN_SDK_VERSION=$version
           echo VULKAN_SDK_PLATFORM=$os
         ) | tee -a $GITHUB_ENV
@@ -74,6 +74,11 @@ runs:
         # install
         . $GITHUB_ACTION_PATH/vulkan_prebuilt_helpers.sh
         unpack_vulkan_installer ${VULKAN_SDK_PLATFORM}
+        if [[ ${VULKAN_SDK_PLATFORM} == mac ]] ; then
+          echo VULKAN_SDK=${VULKAN_SDK_DIR}/macOS | tee -a $GITHUB_ENV
+        else
+          echo VULKAN_SDK=${VULKAN_SDK_DIR} | tee -a $GITHUB_ENV
+        fi
 
     - name: Cleanup Vulkan SDK download file
       if: inputs.cache == 'false'
