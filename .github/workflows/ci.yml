@@ -85,7 +85,7 @@ jobs:
           .\tests\build\test_vulkan || echo COMPILE TEST ONLY COULD NOT RUN || exit /b 4
       - name: Setup tmate session on failure
         if: failure()
-        uses: mxschmitt/action-tmate@v3.9
+        uses: mxschmitt/action-tmate@v3.24
         with:
           limit-access-to-actor: true
 
@@ -128,7 +128,7 @@ jobs:
       - uses: actions/checkout@v7.0.1
       - name: Setup tmate session
         if: ${{ contains(github.event.inputs.extra_tests, 'tmate-before') }}
-        uses: mxschmitt/action-tmate@v3.9
+        uses: mxschmitt/action-tmate@v3.24
         with:
           limit-access-to-actor: true
       - uses: ./
@@ -138,7 +138,7 @@ jobs:
           cache: false
       - name: Setup tmate session
         if: steps.composite.outcome != 'success' || contains(github.event.inputs.extra_tests, 'tmate-after')
-        uses: mxschmitt/action-tmate@v3.9
+        uses: mxschmitt/action-tmate@v3.24
         with:
           limit-access-to-actor: true
       - name: Smoke test Vulkan SDK
@@ -163,6 +163,6 @@ jobs:
           ./tests/build/test_vulkan
       - name: Setup tmate session on failure
         if: failure()
-        uses: mxschmitt/action-tmate@v3.9
+        uses: mxschmitt/action-tmate@v3.24
         with:
           limit-access-to-actor: true
