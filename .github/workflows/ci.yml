@@ -47,6 +47,24 @@ jobs:
           cmake -B tests/build -S tests -DCMAKE_BUILD_TYPE=Release -DCMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE=.
           cmake --build tests/build --config release
 
+  setup-components-cache:
+    if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event.inputs.extra_tests == 'true' || github.event.inputs.extra_tests == 'matrix' }}
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: ./
+        with:
+          version: 1.4.357.0
+          cache: true
+          components: com.lunarg.vulkan.core com.lunarg.vulkan.volk
+      - name: Test Vulkan SDK Install
+        shell: bash
+        run: |
+          echo "Vulkan SDK Version=='$VULKAN_SDK_VERSION'"
+          echo "VULKAN_SDK=='$VULKAN_SDK'"
+          test -n "$VULKAN_SDK_VERSION"
+          glslangValidator --version
+
   test-prebuilt-windows:
     if: ${{ contains(github.event.inputs.extra_tests, 'prebuilt-windows') }}
     strategy:

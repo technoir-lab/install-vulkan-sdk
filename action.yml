@@ -56,6 +56,7 @@ runs:
         . $GITHUB_ACTION_PATH/vulkan_prebuilt_helpers.sh
         components=$(_vulkan_effective_components $os $components) || exit $?
         echo "sdk_dir=$sdk_dir" >> $GITHUB_OUTPUT
+        echo "cache_components=$(echo $components | tr ' ,' '-')" >> $GITHUB_OUTPUT
         (
           echo VULKAN_SDK_VERSION=$version
           echo VULKAN_SDK_PLATFORM=$os
@@ -68,7 +69,7 @@ runs:
       uses: actions/cache@v6.1.0
       with:
         path: vulkan_sdk.*
-        key: ${{ runner.os }}-${{ runner.arch }}-vulkan-prebuilt-sdk-${{ inputs.cache }}-${{ env.VULKAN_SDK_VERSION }}-${{ steps.preset-env.outputs.components }}
+        key: ${{ runner.os }}-${{ runner.arch }}-vulkan-prebuilt-sdk-${{ inputs.cache }}-${{ env.VULKAN_SDK_VERSION }}-${{ steps.preset-env.outputs.cache_components }}
 
     - name: Download Vulkan SDK
       shell: bash
