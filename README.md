@@ -6,7 +6,7 @@ This action automatically downloads and installs the Vulkan SDK development envi
 
 ```yaml
   - name: Install Vulkan SDK
-    uses: technoir-lab/install-vulkan-sdk@v1.2.4
+    uses: technoir-lab/install-vulkan-sdk@v1.3.0
     with:
       version: 1.4.357.0
       components: com.lunarg.vulkan.volk # Defaults to com.lunarg.vulkan.core
