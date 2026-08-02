@@ -101,6 +101,14 @@ function install_linux() {
   echo "note: the Linux SDK is distributed as a single archive; the full SDK is installed regardless of components" >&2
   echo "extract just the SDK's prebuilt binaries ($VULKAN_SDK_VERSION/x86_64) from vulkan_sdk.tar.gz into $VULKAN_SDK_DIR" >&2
   tar -C "$VULKAN_SDK_DIR" --strip-components 2 -xf vulkan_sdk.tar.gz $VULKAN_SDK_VERSION/x86_64
+  # SDK 1.4.350.0+ packages the Vulkan loader under lib/VulkanLoader/lib; also
+  # expose it from lib/ so find_package(Vulkan) keeps working (CMake's FindVulkan
+  # module still searches $VULKAN_SDK/lib for the loader).
+  if [[ ! -e "$VULKAN_SDK_DIR/lib/libvulkan.so" && -f "$VULKAN_SDK_DIR/lib/VulkanLoader/lib/libvulkan.so" ]] ; then
+    echo "note: symlinking Vulkan loader from lib/VulkanLoader/lib into lib/ for CMake compatibility" >&2
+    ln -s VulkanLoader/lib/libvulkan.so "$VULKAN_SDK_DIR/lib/libvulkan.so"
+    ln -s VulkanLoader/lib/libvulkan.so.1 "$VULKAN_SDK_DIR/lib/libvulkan.so.1"
+  fi
 }
 
 # the SDK installer needs to be executed (7z only sees Bin/)
