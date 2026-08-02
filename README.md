@@ -9,13 +9,13 @@ This action automatically downloads and installs the Vulkan SDK development envi
     uses: technoir-lab/install-vulkan-sdk@v1.2.4
     with:
       version: 1.4.357.0
-      components: com.lunarg.vulkan.vma com.lunarg.vulkan.volk com.lunarg.vulkan.kosmic com.lunarg.vulkan.ios com.lunarg.vulkan.glm com.lunarg.vulkan.sdl2
+      components: com.lunarg.vulkan.volk # Defaults to com.lunarg.vulkan.core
       cache: true
 ```
 
 Parameters:
 - *version* (optional; default=latest): `N.N.N.N` style Vulkan SDK release number (or `latest` to use most recent official release).
-- *components* (optional; default=`com.lunarg.vulkan.core`): space-separated list of LunarG installer component ids to install, e.g. `com.lunarg.vulkan.core com.lunarg.vulkan.vma`; `com.lunarg.vulkan.core` is always installed. On macOS and Windows only the listed components are installed (by default: core only). Component ids that are not available on the runner's OS are skipped. The Linux SDK is a single archive, so it always installs the full SDK.
+- *components* (optional; default=`com.lunarg.vulkan.core`): space-separated list of component ids to install, e.g. `com.lunarg.vulkan.core com.lunarg.vulkan.vma`; `com.lunarg.vulkan.core` is always installed. On macOS and Windows only the listed components are installed (by default: core only). Component ids that are not available on the runner's OS are skipped. The Linux SDK is a single archive, so it always installs the full SDK.
 - *cache* (optional; default=false): boolean indicating whether to cache the downloaded installer file between builds. The cache key includes the resolved component list, so different component sets use separate cache entries.
 - *quiet* (optional; default=false): when using `latest` an Annotation is added to builds with actual SDK number; set `quiet: true` to silence.
 
@@ -30,6 +30,22 @@ Know working SDK version for windows/mac/linux:
 - [mac.json](https://vulkan.lunarg.com/sdk/versions/mac.json)
 - See also https://vulkan.lunarg.com/sdk/home
 
+### SDK Components
+
+| ID                       | OS            | Description                                                                                                      |
+|--------------------------|---------------|------------------------------------------------------------------------------------------------------------------|
+| com.lunarg.vulkan.core   | All           | The Vulkan SDK core (always installed): Vulkan Loader, layers, VkConfig, and essential shader development tools. |
+| com.lunarg.vulkan.ios    | macOS         | Development libraries for iOS.                                                                                   |
+| com.lunarg.vulkan.kosmic | macOS         | KosmicKrisp (Vulkan on Metal) technical preview.                                                                 |
+| com.lunarg.vulkan.usr    | macOS         | System-wide installation of ICDs, layers, and SDK tools to /usr/local.                                           |
+| com.lunarg.vulkan.vma    | macOS/Windows | Vulkan Memory Allocator header.                                                                                  |
+| com.lunarg.vulkan.volk   | macOS/Windows | Volk header, source, and library.                                                                                |
+| com.lunarg.vulkan.glm    | macOS/Windows | GLM headers.                                                                                                     |
+| com.lunarg.vulkan.sdl2   | macOS/Windows | SDL2 and SDL3 libraries and headers.                                                                             |
+| com.lunarg.vulkan.x64    | Windows       | X64 binaries for cross compiling.                                                                                |
+| com.lunarg.vulkan.arm64  | Windows       | ARM64 binaries for cross compiling.                                                                              |
+| com.lunarg.vulkan.debug  | Windows       | Shader toolchain debug symbols (64-bit).                                                                         |
+
 ### Environment
 
 Exported variables:
@@ -41,7 +57,7 @@ Exported variables:
 
 ### Caveats
 
-Please be aware that Vulkan SDKs can use a lot of disk space; windows/linux approximately ~0.75GB; macOS approximately ~1.75GB.
+Please be aware that Vulkan SDKs can use a lot of disk space; up to 2.4GB depending on the OS and components installed.
 
 ## References
 - [Vulkan SDK](https://www.lunarg.com/products/vulkan-sdk/)
