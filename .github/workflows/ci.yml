@@ -28,7 +28,7 @@ jobs:
         version: ${{ fromJSON(github.event.inputs.versions) }}
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4.4.0
+      - uses: actions/checkout@v7.0.1
       - uses: ./
         with:
           version: ${{ matrix.version }}
@@ -51,7 +51,7 @@ jobs:
         os: [windows-latest, windows-11-arm]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4.4.0
+      - uses: actions/checkout@v7.0.1
       - uses: ./
         id: composite
         with:
@@ -91,7 +91,7 @@ jobs:
     if: ${{ contains(github.event.inputs.extra_tests, 'prebuilt-linux') }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.4.0
+      - uses: actions/checkout@v7.0.1
       - uses: ./
         with:
           version: ${{ fromJSON(github.event.inputs.versions)[0] }}
@@ -122,7 +122,7 @@ jobs:
     if: ${{ contains(github.event.inputs.extra_tests, 'prebuilt-mac') }}
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4.4.0
+      - uses: actions/checkout@v7.0.1
       - name: Setup tmate session
         if: ${{ contains(github.event.inputs.extra_tests, 'tmate-before') }}
         uses: mxschmitt/action-tmate@v3.9
