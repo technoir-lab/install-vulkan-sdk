@@ -56,7 +56,7 @@ runs:
     - name: Check Vulkan SDK installer cache
       id: vulkan-cached-sdk
       if: inputs.cache != 'false'
-      uses: actions/cache@v4
+      uses: actions/cache@v4.3.0
       with:
         path: vulkan_sdk.*
         key: ${{ runner.os }}-vulkan-prebuilt-sdk-${{ inputs.cache }}-${{ env.VULKAN_SDK_VERSION }}
