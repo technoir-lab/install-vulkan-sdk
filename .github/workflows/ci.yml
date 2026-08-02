@@ -1,31 +1,34 @@
 name: test install-vulkan-sdk
 on:
   push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
   workflow_dispatch:
-      inputs:
-        extra_tests:
-          description: 'Enable additional CI tests'
-          required: false
-          default: 'false'
-        versions:
-          description: 'Vulkan SDK Versions'
-          required: true
-          default: '[ "1.4.357.0" ]'
-        oses:
-          description: 'Matrix OSes'
-          required: true
-          default: '[ "ubuntu-latest", "windows-latest", "macos-latest", "windows-11-arm" ]'
-        quiet:
-          description: 'silence annotation'
-          required: false
-          default: 'false'
+    inputs:
+      extra_tests:
+        description: 'Enable additional CI tests'
+        required: false
+        default: 'false'
+      versions:
+        description: 'Vulkan SDK Versions'
+        required: true
+        default: '[ "1.4.357.0" ]'
+      oses:
+        description: 'Matrix OSes'
+        required: true
+        default: '[ "ubuntu-24.04", "windows-2025", "macos-26", "windows-11-arm" ]'
+      quiet:
+        description: 'silence annotation'
+        required: false
+        default: 'false'
 jobs:
   setup-all-matrix:
-    if: ${{ github.event.inputs.extra_tests == 'true' || github.event.inputs.extra_tests == 'matrix' }}
+    if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event.inputs.extra_tests == 'true' || github.event.inputs.extra_tests == 'matrix' }}
     strategy:
       matrix:
-        os: ${{ fromJSON(github.event.inputs.oses) }}
-        version: ${{ fromJSON(github.event.inputs.versions) }}
+        os: ${{ fromJSON(github.event.inputs.oses || '[ "ubuntu-24.04", "windows-2025", "macos-26", "windows-11-arm" ]') }}
+        version: ${{ fromJSON(github.event.inputs.versions || '[ "1.4.357.0" ]') }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v7.0.1
@@ -48,7 +51,7 @@ jobs:
     if: ${{ contains(github.event.inputs.extra_tests, 'prebuilt-windows') }}
     strategy:
       matrix:
-        os: [windows-latest, windows-11-arm]
+        os: [windows-2025, windows-11-arm]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v7.0.1
@@ -89,7 +92,7 @@ jobs:
 
   test-prebuilt-linux:
     if: ${{ contains(github.event.inputs.extra_tests, 'prebuilt-linux') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: ./
@@ -120,7 +123,7 @@ jobs:
 
   test-prebuilt-macos:
     if: ${{ contains(github.event.inputs.extra_tests, 'prebuilt-mac') }}
-    runs-on: macos-latest
+    runs-on: macos-26
     steps:
       - uses: actions/checkout@v7.0.1
       - name: Setup tmate session
@@ -134,7 +137,7 @@ jobs:
           version: ${{ fromJSON(github.event.inputs.versions)[0] }}
           cache: false
       - name: Setup tmate session
-        if: steps.composite.outcome != 'success' || ${{ contains(github.event.inputs.extra_tests, 'tmate-after') }}
+        if: steps.composite.outcome != 'success' || contains(github.event.inputs.extra_tests, 'tmate-after')
         uses: mxschmitt/action-tmate@v3.9
         with:
           limit-access-to-actor: true
