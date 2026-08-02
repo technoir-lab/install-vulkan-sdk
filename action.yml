@@ -68,7 +68,7 @@ runs:
       uses: actions/cache@v6.1.0
       with:
         path: vulkan_sdk.*
-        key: ${{ runner.os }}-vulkan-prebuilt-sdk-${{ inputs.cache }}-${{ env.VULKAN_SDK_VERSION }}-${{ steps.preset-env.outputs.components }}
+        key: ${{ runner.os }}-${{ runner.arch }}-vulkan-prebuilt-sdk-${{ inputs.cache }}-${{ env.VULKAN_SDK_VERSION }}-${{ steps.preset-env.outputs.components }}
 
     - name: Download Vulkan SDK
       shell: bash
