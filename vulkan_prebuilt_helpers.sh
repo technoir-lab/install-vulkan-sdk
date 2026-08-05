@@ -163,9 +163,9 @@ function install_mac() {
   sudo ${InstallVulkan}.app/Contents/MacOS/${InstallVulkan} --root "$sdk_temp" --accept-licenses --default-answer --confirm-command install $components
   du -hs $sdk_temp
   test -d $sdk_temp/macOS || { echo "unrecognized dmg folder layout: $sdk_temp" ; ls -l $sdk_temp ; exit 10 ; }
-  cp -r $sdk_temp/macOS $VULKAN_SDK_DIR/
+  cp -a $sdk_temp/macOS $VULKAN_SDK_DIR/
   if [[ -d $sdk_temp/iOS ]] ; then
-    cp -r $sdk_temp/iOS $VULKAN_SDK_DIR/
+    cp -a $sdk_temp/iOS $VULKAN_SDK_DIR/
   else
     echo "warning: installer produced no iOS tree; skipping iOS SDK" >&2
   fi
