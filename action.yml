@@ -88,9 +88,34 @@ runs:
         . $GITHUB_ACTION_PATH/vulkan_prebuilt_helpers.sh
         unpack_vulkan_installer ${VULKAN_SDK_PLATFORM}
         if [[ ${VULKAN_SDK_PLATFORM} == mac ]] ; then
-          echo VULKAN_SDK=${VULKAN_SDK_DIR}/macOS | tee -a $GITHUB_ENV
+          vulkan_sdk=${VULKAN_SDK_DIR}/macOS
         else
-          echo VULKAN_SDK=${VULKAN_SDK_DIR} | tee -a $GITHUB_ENV
+          vulkan_sdk=${VULKAN_SDK_DIR}
+        fi
+        echo VULKAN_SDK=${vulkan_sdk} | tee -a $GITHUB_ENV
+        # export C_INCLUDE_PATH/LIBRARY_PATH so C/C++ compilers and linkers find
+        # the SDK's headers and libraries without extra -I/-L flags; any existing
+        # values are preserved (the SDK directories are prepended). The Windows
+        # SDK uses capitalized Include/ and Lib/ directories.
+        if [[ ${VULKAN_SDK_PLATFORM} == windows || ${VULKAN_SDK_PLATFORM} == warm ]] ; then
+          sdk_include=${vulkan_sdk}/Include
+          sdk_lib=${vulkan_sdk}/Lib
+          path_sep=';'
+        else
+          sdk_include=${vulkan_sdk}/include
+          sdk_lib=${vulkan_sdk}/lib
+          path_sep=':'
+        fi
+        echo C_INCLUDE_PATH=${sdk_include}${C_INCLUDE_PATH:+$path_sep$C_INCLUDE_PATH} | tee -a $GITHUB_ENV
+        echo LIBRARY_PATH=${sdk_lib}${LIBRARY_PATH:+$path_sep$LIBRARY_PATH} | tee -a $GITHUB_ENV
+        # On Linux/macOS also export the runtime dynamic library search path so
+        # apps linked against the SDK's loader/libraries can find them without
+        # an rpath (LD_LIBRARY_PATH on Linux, DYLD_LIBRARY_PATH on macOS, per
+        # the Vulkan SDK getting-started docs); existing values are preserved.
+        if [[ ${VULKAN_SDK_PLATFORM} == mac ]] ; then
+          echo DYLD_LIBRARY_PATH=${sdk_lib}${DYLD_LIBRARY_PATH:+$path_sep$DYLD_LIBRARY_PATH} | tee -a $GITHUB_ENV
+        elif [[ ${VULKAN_SDK_PLATFORM} == linux ]] ; then
+          echo LD_LIBRARY_PATH=${sdk_lib}${LD_LIBRARY_PATH:+$path_sep$LD_LIBRARY_PATH} | tee -a $GITHUB_ENV
         fi
 
     - name: Cleanup Vulkan SDK download file
