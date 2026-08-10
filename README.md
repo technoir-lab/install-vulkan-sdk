@@ -54,6 +54,17 @@ Exported variables:
 - `VULKAN_SDK_VERSION`
 - `VULKAN_SDK_PLATFORM`
 - `PATH` is extended to include `VULKAN_SDK/bin` (so SDK tools like `glslangValidator` can be used directly)
+- `C_INCLUDE_PATH` (set to `$VULKAN_SDK/include`, or `$VULKAN_SDK/Include` on
+  Windows) so C/C++ compilers find the SDK headers without extra `-I` flags
+- `LIBRARY_PATH` (set to `$VULKAN_SDK/lib`, or `$VULKAN_SDK/Lib` on Windows) so
+  linkers find the SDK libraries without extra `-L` flags
+- `LD_LIBRARY_PATH` (Linux; set to `$VULKAN_SDK/lib`) so dynamically linked SDK
+  libraries (e.g. the Vulkan loader) are found at run time without extra rpath flags
+- `DYLD_LIBRARY_PATH` (macOS; set to `$VULKAN_SDK/lib`) so dynamically linked
+  SDK libraries (e.g. the Vulkan loader) are found at run time without extra rpath flags
+
+Any pre-existing `C_INCLUDE_PATH`/`LIBRARY_PATH`/`LD_LIBRARY_PATH`/`DYLD_LIBRARY_PATH`
+values are preserved (the SDK directories are prepended).
 
 ### Caveats
 
