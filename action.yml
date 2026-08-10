@@ -89,6 +89,8 @@ runs:
         unpack_vulkan_installer ${VULKAN_SDK_PLATFORM}
         if [[ ${VULKAN_SDK_PLATFORM} == mac ]] ; then
           vulkan_sdk=${VULKAN_SDK_DIR}/macOS
+        elif [[ ${VULKAN_SDK_PLATFORM} == linux ]] ; then
+          vulkan_sdk=${VULKAN_SDK_DIR}/${VULKAN_SDK_VERSION}/x86_64
         else
           vulkan_sdk=${VULKAN_SDK_DIR}
         fi
