@@ -48,6 +48,14 @@ Know working SDK version for windows/mac/linux:
 
 ### Environment
 
+The action sources the SDK's own environment setup script on macOS and Linux,
+then exports the resulting variables for every later job step:
+
+- macOS: `<VULKAN_SDK_DIR>/setup-env.sh`
+- Linux: `<VULKAN_SDK_DIR>/<version>/setup-env.sh`
+- Windows: the SDK provides no `setup-env.sh` (the installer sets environment
+  variables itself), so the action sets the equivalent variables directly.
+
 Exported variables:
 - `VULKAN_SDK` (standard variable used by cmake and other build tools; on macOS
   this points at the installed `macOS` subdirectory, and on Linux at the
@@ -59,13 +67,22 @@ Exported variables:
   Windows) so C/C++ compilers find the SDK headers without extra `-I` flags
 - `LIBRARY_PATH` (set to `$VULKAN_SDK/lib`, or `$VULKAN_SDK/Lib` on Windows) so
   linkers find the SDK libraries without extra `-L` flags
-- `LD_LIBRARY_PATH` (Linux; set to `$VULKAN_SDK/lib`) so dynamically linked SDK
+- `LD_LIBRARY_PATH` (Linux; from `setup-env.sh`, set to
+  `$VULKAN_SDK/lib/VulkanLoader/lib` by default) so dynamically linked SDK
   libraries (e.g. the Vulkan loader) are found at run time without extra rpath flags
-- `DYLD_LIBRARY_PATH` (macOS; set to `$VULKAN_SDK/lib`) so dynamically linked
-  SDK libraries (e.g. the Vulkan loader) are found at run time without extra rpath flags
+- `DYLD_LIBRARY_PATH` (macOS; from `setup-env.sh`, set to `$VULKAN_SDK/lib`)
+  so dynamically linked SDK libraries (e.g. the Vulkan loader) are found at
+  run time without extra rpath flags
+- `VK_ADD_LAYER_PATH` (macOS/Linux; from `setup-env.sh`) so SDK layers are found
+- `VK_ICD_FILENAMES` (macOS; from `setup-env.sh`) so MoltenVK is found
+- `VK_DRIVER_FILES` (macOS; from `setup-env.sh`) so MoltenVK is found
+- `PKG_CONFIG_PATH` (macOS/Linux; from `setup-env.sh`) so SDK `.pc` files are found
+- `CMAKE_PREFIX_PATH` (Linux; from `setup-env.sh`) so CMake configs are found
 
 Any pre-existing `C_INCLUDE_PATH`/`LIBRARY_PATH`/`LD_LIBRARY_PATH`/`DYLD_LIBRARY_PATH`
-values are preserved (the SDK directories are prepended).
+values are preserved. On macOS/Linux `setup-env.sh` also preserves pre-existing
+`PATH`/`PKG_CONFIG_PATH`/`VK_ADD_LAYER_PATH` values; the SDK directories are
+prepended (or appended for `PATH` on macOS).
 
 ### Caveats
 

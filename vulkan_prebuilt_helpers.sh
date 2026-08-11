@@ -99,8 +99,8 @@ function unpack_vulkan_installer() {
 function install_linux() {
   test -d $VULKAN_SDK_DIR && test -f vulkan_sdk.tar.gz
   echo "note: the Linux SDK is distributed as a single archive; the full SDK is installed regardless of components" >&2
-  echo "extract the SDK's prebuilt binaries ($VULKAN_SDK_VERSION/x86_64) from vulkan_sdk.tar.gz into $VULKAN_SDK_DIR" >&2
-  tar -C "$VULKAN_SDK_DIR" -xf vulkan_sdk.tar.gz $VULKAN_SDK_VERSION/x86_64
+  echo "extract the SDK's prebuilt binaries ($VULKAN_SDK_VERSION/x86_64) and setup-env.sh from vulkan_sdk.tar.gz into $VULKAN_SDK_DIR" >&2
+  tar -C "$VULKAN_SDK_DIR" -xf vulkan_sdk.tar.gz $VULKAN_SDK_VERSION/x86_64 $VULKAN_SDK_VERSION/setup-env.sh
   local sdk_root="$VULKAN_SDK_DIR/$VULKAN_SDK_VERSION/x86_64"
   # SDK 1.4.350.0+ packages the Vulkan loader under lib/VulkanLoader/lib; also
   # expose it from lib/ so find_package(Vulkan) keeps working (CMake's FindVulkan
@@ -165,6 +165,7 @@ function install_mac() {
   du -hs $sdk_temp
   test -d $sdk_temp/macOS || { echo "unrecognized dmg folder layout: $sdk_temp" ; ls -l $sdk_temp ; exit 10 ; }
   cp -a $sdk_temp/macOS $VULKAN_SDK_DIR/
+  cp -a $sdk_temp/setup-env.sh $VULKAN_SDK_DIR/
   if [[ -d $sdk_temp/iOS ]] ; then
     cp -a $sdk_temp/iOS $VULKAN_SDK_DIR/
   else
