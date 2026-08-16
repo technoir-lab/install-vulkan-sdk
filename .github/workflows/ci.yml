@@ -17,7 +17,7 @@ on:
       oses:
         description: 'Matrix OSes'
         required: true
-        default: '[ "ubuntu-24.04", "windows-2025", "macos-26", "windows-11-arm" ]'
+        default: '[ "ubuntu-26.04", "windows-2025", "macos-26", "windows-11-arm" ]'
       quiet:
         description: 'silence annotation'
         required: false
@@ -27,7 +27,7 @@ jobs:
     if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event.inputs.extra_tests == 'true' || github.event.inputs.extra_tests == 'matrix' }}
     strategy:
       matrix:
-        os: ${{ fromJSON(github.event.inputs.oses || '[ "ubuntu-24.04", "windows-2025", "macos-26", "windows-11-arm" ]') }}
+        os: ${{ fromJSON(github.event.inputs.oses || '[ "ubuntu-26.04", "windows-2025", "macos-26", "windows-11-arm" ]') }}
         version: ${{ fromJSON(github.event.inputs.versions || '[ "1.4.357.0" ]') }}
     runs-on: ${{ matrix.os }}
     steps:
@@ -114,7 +114,7 @@ jobs:
 
   test-prebuilt-linux:
     if: ${{ contains(github.event.inputs.extra_tests, 'prebuilt-linux') }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: ./
