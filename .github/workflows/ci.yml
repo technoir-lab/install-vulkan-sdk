@@ -36,6 +36,12 @@ jobs:
         version: ${{ fromJSON(github.event.inputs.versions || '[ "1.4.357.0" ]') }}
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Configure Git
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.longpaths true
       - uses: actions/checkout@v7.0.1
       - uses: ./
         with:
@@ -77,6 +83,12 @@ jobs:
         os: [windows-2025, windows-11-arm]
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Configure Git
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.longpaths true
       - uses: actions/checkout@v7.0.1
       - uses: ./
         id: composite
