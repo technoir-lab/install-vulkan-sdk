@@ -80,6 +80,57 @@ jobs:
           test -n "$VULKAN_SDK_VERSION"
           glslangValidator --version
 
+  setup-components-ios:
+    if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event.inputs.extra_tests == 'true' || github.event.inputs.extra_tests == 'matrix' }}
+    runs-on: macos-26
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+      - name: Install Vulkan SDK
+        uses: ./
+        with:
+          version: 1.4.357.0
+          cache: true
+          components: com.lunarg.vulkan.volk com.lunarg.vulkan.ios
+      - name: Test Vulkan SDK Install
+        shell: bash
+        run: |
+          echo "Vulkan SDK Version=='$VULKAN_SDK_VERSION'"
+          echo "VULKAN_SDK=='$VULKAN_SDK'"
+          test -n "$VULKAN_SDK_VERSION"
+          glslangValidator --version
+          # the iOS SDK is installed next to the macOS SDK
+          test -d "$VULKAN_SDK/../iOS/lib"
+          # symlinks are preserved
+          test -n "$(find "$VULKAN_SDK" -type l -print -quit)"
+          # the installed SDK belongs to the runner user
+          test -z "$(find "$VULKAN_SDK/.." ! -user "$(id -un)" -print -quit)"
+
+  setup-components-usr:
+    if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event.inputs.extra_tests == 'true' || github.event.inputs.extra_tests == 'matrix' }}
+    runs-on: macos-26
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+      - name: Install Vulkan SDK
+        uses: ./
+        with:
+          version: 1.4.357.0
+          cache: true
+          components: com.lunarg.vulkan.usr
+      - name: Test Vulkan SDK Install
+        shell: bash
+        run: |
+          echo "Vulkan SDK Version=='$VULKAN_SDK_VERSION'"
+          echo "VULKAN_SDK=='$VULKAN_SDK'"
+          test -n "$VULKAN_SDK_VERSION"
+          glslangValidator --version
+          # the system-wide component installs the loader into /usr/local
+          test -e /usr/local/lib/libvulkan.dylib
+          # the installed SDK belongs to the runner user, although the
+          # system-wide component requires running the installer as root
+          test -z "$(find "$VULKAN_SDK/.." ! -user "$(id -un)" -print -quit)"
+
   test-prebuilt-windows:
     if: ${{ contains(github.event.inputs.extra_tests, 'prebuilt-windows') }}
     strategy:
