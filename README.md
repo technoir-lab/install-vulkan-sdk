@@ -46,6 +46,9 @@ Know working SDK version for windows/mac/linux:
 | com.lunarg.vulkan.arm64  | Windows       | ARM64 binaries for cross compiling.                                                                              |
 | com.lunarg.vulkan.debug  | Windows       | Shader toolchain debug symbols (64-bit).                                                                         |
 
+On macOS the action runs the SDK installer as the current user. `com.lunarg.vulkan.usr` is the exception: it installs files outside the SDK
+directory, so the action runs the installer with `sudo` and then hands the installed SDK over to the current user.
+
 ### Environment
 
 The action sources the SDK's own environment setup script on macOS and Linux,

@@ -161,18 +161,43 @@ function install_mac() {
   local sdk_temp=${VULKAN_SDK_DIR}.tmp
   local components
   components=$(_vulkan_effective_components mac $(_vulkan_requested_components)) || return $?
-  sudo ${InstallVulkan}.app/Contents/MacOS/${InstallVulkan} --root "$sdk_temp" --accept-licenses --default-answer --confirm-command install $components
+  # only the system-wide component (com.lunarg.vulkan.usr) installs files
+  # outside the install root, so only it needs the installer to run as root
+  local sudo=
+  if [[ " $components " == *" com.lunarg.vulkan.usr "* ]] ; then
+    sudo=sudo
+  fi
+  $sudo ${InstallVulkan}.app/Contents/MacOS/${InstallVulkan} --root "$sdk_temp" --accept-licenses --default-answer --confirm-command install $components
   du -hs $sdk_temp
   test -d $sdk_temp/macOS || { echo "unrecognized dmg folder layout: $sdk_temp" ; ls -l $sdk_temp ; exit 10 ; }
-  cp -a $sdk_temp/macOS $VULKAN_SDK_DIR/
-  cp -a $sdk_temp/setup-env.sh $VULKAN_SDK_DIR/
+  if [[ -n $sudo ]] ; then
+    # hand the root-owned install over to the current user, so it can be moved
+    sudo chown -R "$(id -u):$(id -g)" "$sdk_temp"
+  fi
+  # move rather than copy: the install root is next to VULKAN_SDK_DIR on the
+  # same volume, so moving takes no time even for multi-gigabyte SDK trees
+  _move_into $sdk_temp/macOS $VULKAN_SDK_DIR
+  _move_into $sdk_temp/setup-env.sh $VULKAN_SDK_DIR
   if [[ -d $sdk_temp/iOS ]] ; then
-    cp -a $sdk_temp/iOS $VULKAN_SDK_DIR/
+    _move_into $sdk_temp/iOS $VULKAN_SDK_DIR
   else
     echo "warning: installer produced no iOS tree; skipping iOS SDK" >&2
   fi
   if [[ -d ${InstallVulkan}.app/Contents ]] ; then
-    sudo rm -rf "$sdk_temp"
+    rm -rf "$sdk_temp"
     rm -rf ${InstallVulkan}.app
+  fi
+}
+
+# moves $1 into the directory $2; if $2 already contains an entry with the
+# same name (e.g. from an earlier install in the same job), copies $1 over
+# it instead
+function _move_into() {
+  local src=$1 dest_dir=$2 dest
+  dest=$dest_dir/$(basename "$src")
+  if [[ -e $dest || -L $dest ]] ; then
+    cp -a "$src" "$dest_dir/"
+  else
+    mv "$src" "$dest_dir/"
   fi
 }
