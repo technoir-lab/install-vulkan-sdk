@@ -6,9 +6,9 @@ This action automatically downloads and installs the Vulkan SDK development envi
 
 ```yaml
   - name: Install Vulkan SDK
-    uses: technoir-lab/install-vulkan-sdk@v1.4.0
+    uses: technoir-lab/install-vulkan-sdk@v1.4.1
     with:
-      version: 1.4.357.0
+      version: 1.4.363.0
       components: com.lunarg.vulkan.volk # Defaults to com.lunarg.vulkan.core
       cache: true
 ```
@@ -22,7 +22,7 @@ Parameters:
 ### SDK Revisions
 
 Know working SDK version for windows/mac/linux:
-- 1.4.357.0
+- 1.4.363.0
 
 ##### Available SDK versions:
 - [windows.json](https://vulkan.lunarg.com/sdk/versions/windows.json) / [warm.json](https://vulkan.lunarg.com/sdk/versions/warm.json)
